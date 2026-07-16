@@ -7,7 +7,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/clinicops
+      DATABASE_URL: ${DATABASE_URL}
+    volumes:
+      - .:/app
   
   db: 
     image: pgvector/pgvector:pg17
@@ -17,12 +19,14 @@ services:
       POSTGRES_DB: clinicops
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d clinicops"]
+      interval: 10s
       timeout: 5s
       retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    restart: unless-stopped
 
 
 volumes:
