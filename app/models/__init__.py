@@ -1,1 +1,1 @@
-from app.models.reservation import Reservation
+from app.models.reservation_model import Reservation

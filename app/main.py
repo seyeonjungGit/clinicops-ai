@@ -3,8 +3,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.repositories.reservation import create_reservation
-from app.schemas.reservation import ReservationCreate, ReservationResponse
+from app.services import reservation_service
+from app.schemas.reservation_schema import ReservationCreate, ReservationResponse
 
 
 app = FastAPI(
@@ -38,4 +38,17 @@ def create_reservation_api(
     reservation: ReservationCreate,
     db: Session = Depends(get_db)
 ):
-    return create_reservation(db, reservation)
+    return reservation_service.create_reservation(db, reservation)
+
+@app.get("/reservations", response_model=list[ReservationResponse])
+def read_reservations(
+    db: Session = Depends(get_db)
+):
+    return reservation_service.get_reservations(db)
+
+@app.get("/reservations/{reservation_id}", response_model=ReservationResponse)
+def get_reservation_api(
+    reservation_id: int, 
+    db: Session = Depends(get_db)
+):
+    return reservation_service.get_reservation(db,reservation_id)
